@@ -1,0 +1,15 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+WORKDIR /src
+COPY ["API/Classfy.Unified.API/Classfy.Unified.API.csproj", "API/Classfy.Unified.API/"]
+COPY ["Modules/Users/Classfy.Users.Infra.Persistence.EF/Classfy.Users.Infra.Persistence.EF.csproj", "Modules/Users/Classfy.Users.Infra.Persistence.EF/"]
+COPY ["Modules/Users/Classfy.Users.Domain/Classfy.Users.Domain.csproj", "Modules/Users/Classfy.Users.Domain/"]
+COPY ["BuildingBlocks/Domain/Classfy.BuildingBlocks.Domain/Classfy.BuildingBlocks.Domain.csproj", "BuildingBlocks/Domain/Classfy.BuildingBlocks.Domain/"]
+COPY ["Modules/Users/Classfy.Users.Application/Classfy.Users.Application.csproj", "Modules/Users/Classfy.Users.Application/"]
+RUN dotnet restore "API/Classfy.Unified.API/Classfy.Unified.API.csproj"
+COPY . .
+
+RUN dotnet tool install --global dotnet-ef
+
+RUN chmod +x ./database-migrations.sh
+CMD /bin/bash ./database-migrations.sh

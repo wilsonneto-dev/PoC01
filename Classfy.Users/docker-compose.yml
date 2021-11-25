@@ -1,0 +1,23 @@
+version: '3.4'
+
+services:
+  classfy-database:
+    image: "mcr.microsoft.com/mssql/server"
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=1Secure*Password1
+
+  classfy-database-migrations:
+    build:
+      context: .
+      dockerfile: ./DatabaseMigrationsDockerfile
+
+  classfy-users-api:
+    image: ${DOCKER_REGISTRY-}classfyusersapi
+    build:
+      context: .
+      dockerfile: src/Classfy.Users.API/Dockerfile
+    depends_on:
+      - classfy-database
